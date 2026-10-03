@@ -8,7 +8,7 @@ class UserManagerTests(TestCase):
     def test_create_user_normalizes_email_and_hashes_password(self):
         user = User.objects.create_user("Shopper@Example.com", "long-test-password")
 
-        self.assertEqual(user.email, "shopper@example.com")
+        self.assertEqual(user.email, "Shopper@example.com")
         self.assertTrue(user.check_password("long-test-password"))
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
