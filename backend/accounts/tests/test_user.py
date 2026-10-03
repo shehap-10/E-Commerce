@@ -1,6 +1,6 @@
 import pytest
 from django.core.management import call_command
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError,connection, transaction
 
 from accounts.models import User
 from accounts.tests.factories import UserFactory
@@ -31,7 +31,6 @@ def test_database_rejects_email_duplicate_ignoring_case():
     with pytest.raises(IntegrityError), transaction.atomic():
         User.objects.create(email="a@example.com")
 
-
 @pytest.mark.django_db
 def test_createsuperuser_command_uses_email_without_username(monkeypatch):
     monkeypatch.setenv("DJANGO_SUPERUSER_PASSWORD", "long-test-password")
@@ -46,3 +45,8 @@ def test_createsuperuser_command_uses_email_without_username(monkeypatch):
     user = User.objects.get(email="admin@example.com")
     assert user.is_staff
     assert user.is_superuser
+
+
+@pytest.mark.django_db
+def test_database_is_postgresql():
+    assert connection.vendor == "postgresql"
